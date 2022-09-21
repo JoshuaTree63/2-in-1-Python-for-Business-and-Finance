@@ -1,0 +1,30 @@
+import numpy as np
+import pandas as pd
+from pandas_datareader import data as wb
+import matplotlib.pylab as plt
+
+
+ticker_name =  input("What company you looking for? Please insert the ticker ")
+result_ticker = [ticker_name[:].upper()]
+
+start_data = input("Enter the date you want to start and see the chart in YYYY-MM-DD format")
+
+
+sec_data = pd.DataFrame()
+
+for t in result_ticker:
+    sec_data[t] = wb.DataReader(t,data_source = 'yahoo', start = start_data)['Adj Close']
+    spx500 = wb.DataReader('^GSPC',data_source = 'yahoo', start = start_data)['Adj Close']
+
+
+sec_data.tail()
+
+sec_returns= np.log(sec_data/sec_data.shift(1))
+spx500_returns= np.log(spx500/spx500.shift(1))
+
+sec_returns.cov()
+spx500_returns.cov(spx500)
+
+sec_returns[result_ticker].mean()*250
+sec_returns[result_ticker].std()*250**0.5
+
